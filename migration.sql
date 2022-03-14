@@ -34,3 +34,5 @@ CREATE TABLE goals(
     goal text,
     duration integer
 );
+
+INSERT INTO users(name,username) VALUES('Samuel', 'sammyj');
