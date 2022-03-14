@@ -12,6 +12,12 @@ const pool = new Pool ({
     }
 });
 
+app.get('/users', ((req, res) =>{
+    pool.query("SELECT * FROM users")
+    .then((result)=> res.send(result.rows))
+    .catch((err)=> console.log(err))
+}))
+
 app.use(express.static('public'));
 
 const port = process.env.PORT;
