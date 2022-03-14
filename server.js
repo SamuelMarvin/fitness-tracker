@@ -20,14 +20,26 @@ app.get('/users', (req, res) =>{
     .catch((err)=> console.log(err))
 });
 
-app.get('/:name/workout', (req, res) =>{
-    const name = req.params.name;
-    pool.query('SELECT * FROM workout WHERE name=$1', [name])
+app.get('/:id/workout', (req, res) =>{
+    const id = req.params.id;
+    pool.query('SELECT * FROM workout WHERE id=$1', [id])
     .then((result)=> res.send(result.rows))
-    .then((err)=> console.log(err))
+    .catch((err)=> console.log(err))
 });
 
+app.get('/:id/exercise', (req,res) =>{
+    const id = req.params.id;
+    pool.query('SELECT * FROM exercise WHERE id=$1', [id])
+    .then((result)=> res.send(result.rows))
+    .catch((err)=> console.log(err))
+})
 
+app.get('/:id/goals', (req,res) =>{
+    const id = req.params.id;
+    pool.query('SELECT * FROM goals WHERE id=$1', [id])
+    .then((result)=> res.send(result.rows))
+    .catch((err)=> console.log(err))
+})
 
 const port = process.env.PORT;
 app.listen(port);
