@@ -27,7 +27,7 @@ $('.postnewuser').on('click', ()=>{
     $.ajax({
         type: "POST",
         url: '/users',
-        data: {'name':"katy", 'username':"katyb"},
+        data: '{name:"katy", username:"katyb"}',
         success: console.log(data),
         dataType: json
       });
