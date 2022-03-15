@@ -24,6 +24,5 @@ $('.testButton4').on('click', ()=>{
 
 
 $('.postnewuser').on('click', ()=>{
-    $.post('/users')
-    .done((data = {name:"katy", username:"katyb"})=> console.log(data))
+    $.post('/users',(data={name:"katy", username:"katyb"})=> console.log(data), json)
 })
