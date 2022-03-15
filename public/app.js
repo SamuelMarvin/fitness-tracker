@@ -24,11 +24,5 @@ $('.testButton4').on('click', ()=>{
 
 
 $('.postnewuser').on('click', ()=>{
-    $.ajax({
-        type: "POST",
-        url: '/users',
-        data: '{name:"katy", username:"katyb"}',
-        success: console.log(data),
-        dataType: json
-      });
+    $.post('/users',(data={name:"katy", username:"katyb"})=> console.log(data), "json")
 })
