@@ -14,6 +14,13 @@ const pool = new Pool ({
 
 app.use(express.static('public'));
 
+app.get('/:name', (req,res)=>{
+    const name = res.params.name;
+    pool.query('SELSECT id FROM users WHERE name=$1', [name])
+    .then((result)=> res.send(result.rows))
+    .catch((err)=> console.log(err))
+})
+
 app.get('/users', (req, res) =>{
     pool.query("SELECT * FROM users")
     .then((result)=> res.send(result.rows))
@@ -41,5 +48,5 @@ app.get('/:id/goals', (req,res) =>{
     .catch((err)=> console.log(err))
 })
 
-const port = process.env.PORT;
+const port = process.env.PORT || 9000;
 app.listen(port);
