@@ -24,5 +24,11 @@ $('.testButton4').on('click', ()=>{
 
 
 $('.postnewuser').on('click', ()=>{
-    $.post('/users',(data={name:"katy", username:"katyb"})=> console.log(data), contentType=json)
+    $.ajax({
+        type: "POST",
+        url: '/users',
+        data: {'name':"katy", 'username':"katyb"},
+        success: console.log(data),
+        dataType: json
+      });
 })
