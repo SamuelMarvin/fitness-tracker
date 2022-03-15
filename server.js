@@ -48,5 +48,5 @@ app.get('/:id/goals', (req,res) =>{
     .catch((err)=> console.log(err))
 })
 
-const port = process.env.PORT || 9000;
+const port = process.env.PORT;
 app.listen(port);
