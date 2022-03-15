@@ -21,3 +21,8 @@ $('.testButton4').on('click', ()=>{
         console.log(data);
     })
 })
+
+$('.postnewuser').on('click', ()=>{
+    $.post('/users', {name:'katy', username:'katyb'})
+    .done((data)=> console.log(data))
+})
