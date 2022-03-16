@@ -8,6 +8,7 @@ body {
     flex-direction: column;
     align-items: center;
     flex-basis: auto;
+    margin: 0px;
 }
 
 .app {
@@ -32,7 +33,7 @@ body {
     z-index: 1;
 }
 
-.home {
+.homeb {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -45,17 +46,17 @@ body {
     opacity: .7;
 }
 
-.home:active {
+.homeb:active {
     box-shadow: none;
     top: 10px;
     margin-bottom: 0;
   }
   
-.home:hover {
+.homeb:hover {
     opacity: 5;
   }
 
-.signIn {
+.signInb {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -68,17 +69,17 @@ body {
     opacity: .7;
 }
 
-.signIn:active {
+.signInb:active {
     box-shadow: none;
     top: 10px;
     margin-bottom: 0;
   }
   
-.signIn:hover {
+.signInb:hover {
     opacity: 5;
   }
 
-.createUser {
+.createUserb {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -91,13 +92,13 @@ body {
     opacity: .7;
 }
 
-.createUser:active {
+.createUserb:active {
     box-shadow: none;
     top: 10px;
     margin-bottom: 0;
   }
   
-.createUser:hover {
+.createUserb:hover {
     opacity: 5;
   }
 
@@ -114,5 +115,5 @@ body {
     color: orange;
     font-size: 150px;
     font-weight: 800px;
-    background-image: url(https://images.squarespace-cdn.com/content/v1/5055e59ce4b02b42cb30023c/1442325163600-MOG62M7UQ1RGO0Z05VZD/image-asset.jpeg?format=2500w);
+    background-image: url();
 }

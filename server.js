@@ -2,7 +2,6 @@ require('dotenv').config();
 const express = require('express');
 const pg = require('pg');
 const app = express();
-app.use(express.json());
 const { Pool } = require('pg');
 
 const pool = new Pool ({
@@ -13,16 +12,18 @@ const pool = new Pool ({
 });
 
 app.use(express.static('public'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.get('/:username', (req,res) =>{
+app.get('/login/:username', (req,res) =>{
     const username = req.params.username;
     const password = req.body.password;
     pool.query(`SELECT * FROM users WHERE username=$1`,[username])
-    .then((result)=> {
-        if(result.rows[0].password === password){
-            res.send('permission granted')
-        } else {res.send('access denied')}
-    })
+    .then((result)=> {res.send(result)
+        // if(result.rows[0].password == password){
+        //     res.send('permission granted')
+        // } else {res.send('access denied')}
+    }).catch((err)=> console.log(err))
 })
 
 app.get('/:username/goals', (req,res)=>{
