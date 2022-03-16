@@ -14,94 +14,98 @@ const pool = new Pool ({
 
 app.use(express.static('public'));
 
-app.get('/users', (req, res) =>{
-    pool.query("SELECT * FROM users")
-    .then((result)=> res.send(result.rows))
-    .catch((err)=> console.log(err))
-});
-
-app.get('/:id/workout', (req, res) =>{
-    const id = req.params.id;
-    pool.query('SELECT * FROM workout WHERE id=$1', [id])
-    .then((result)=> res.send(result.rows))
-    .catch((err)=> console.log(err))
-});
-
-app.get('/:id/exercise', (req,res) =>{
-    const id = req.params.id;
-    pool.query('SELECT * FROM exercise WHERE id=$1', [id])
-    .then((result)=> res.send(result.rows))
-    .catch((err)=> console.log(err))
+app.get('/:username', (req,res) =>{
+    const username = req.params.username;
+    const password = req.body.password;
+    pool.query(`SELECT * FROM users WHERE username=$1`,[username])
+    .then((result)=> {
+        if(result.rows[0].password === password){
+            res.send('permission granted')
+        } else {res.send('access denied')}
+    })
 })
 
-app.get('/:id/goals', (req,res) =>{
-    const id = req.params.id;
-    pool.query('SELECT * FROM goals WHERE id=$1', [id])
+app.get('/:username/goals', (req,res)=>{
+    const username = req.params.username;
+    pool.query('SELECT * FROM goals WHERE username=$1',[username])
     .then((result)=> res.send(result.rows))
-    .catch((err)=> console.log(err))
+    .catch((err)=> res.send(err))
 })
 
-app.post('/users', (req, res) => {
-    const {name, username} = req.body;
-    console.log(req.headers)
-    pool.query('INSERT INTO users(name, username) VALUES($1, $2) RETURNING *;',[name, username])
-    .then((result)=> res.send(result.rows[0]))
-    .catch((err)=> res.sendStatus(500))
+app.get('/:username/workouts', (req,res)=>{
+    const username = req.params.username;
+    pool.query('SELECT * FROM workouts WHERE username=$1',[username])
+    .then((result)=> res.send(result.rows))
+    .catch((err)=> res.send(err))
 })
 
-app.post('/workout', (req, res) => {
-    const {userid, type, time, date} = req.body;
-    pool.query('INSERT INTO workout(userid, type, time, date) VALUES($1, $2, $3, $4) RETURNING *;',[userid, type, time, date])
-    .then((result)=> res.send(result.rows[0]))
-    .catch((err)=> res.sendStatus(500))
+app.get('/:username/:workoutid/exercise', (req,res)=>{
+    const username = req.params.username;
+    const workoutid = req.params.workoutid;
+    pool.query('SELECT * FROM exercise WHERE workoutid=$1',[workoutid])
+    .then((result)=> res.send(result.rows))
+    .catch((err)=> res.send(err))
 })
 
-app.post('/exercise', (req, res) => {
+app.post('/createUser', (req, res) => {
+    const {name, username, password} = req.body;
+    pool.query('INSERT INTO users(name, username, password) VALUES($1, $2, $3);',[name, username, password])
+    .then((result)=> res.send('user created'))
+    .catch((err)=> res.send('unable to create user'))
+})
+
+app.post('/createWorkout', (req, res) => {
+    const {username, type, time, date} = req.body;
+    pool.query('INSERT INTO workout(username, type, time, date) VALUES($1, $2, $3, $4) RETURNING *;',[username, type, time, date])
+    .then((result)=> res.send('workout created'))
+    .catch((err)=> res.send('unable to create workout'))
+})
+
+app.post('/createExercise', (req, res) => {
     const {workoutid, weight, sets, reps, time, distance} = req.body;
     pool.query('INSERT INTO exercise(workoutid, weight, sets, reps, time, distance) VALUES($1, $2, $3, $4, $5, $6) RETURNING *;',[workoutid, weight, sets, reps, time, distance])
+    .then((result)=> res.send('exercise created'))
+    .catch((err)=> res.send('unable to create exercise'))
+})
+
+app.post('/addGoals', (req, res) => {
+    const {username, goal, completionDate} = req.body;
+    pool.query('INSERT INTO goals(username, goal, completionDate) VALUES($1, $2) RETURNING *;',[username, goal, completionDate])
     .then((result)=> res.send(result.rows[0]))
     .catch((err)=> res.sendStatus(500))
 })
 
-app.post('/goals', (req, res) => {
-    const {userid, goal, durartion} = req.body;
-    pool.query('INSERT INTO goals(userid, goal, durartion) VALUES($1, $2) RETURNING *;',[userid, goal, durartion])
-    .then((result)=> res.send(result.rows[0]))
-    .catch((err)=> res.sendStatus(500))
-})
 //delete user and all data with him
-app.delete('/users/:id/:workoutid', (req,res)=>{
-    const id = req.params.id;
-    const workoutid = req.params.workoutid;
-    pool.query('DELETE FROM goals WHERE userid=$1;',[id])
+app.delete('/deleteUser/:username/', (req,res)=>{
+    const username = req.params.username;
+    pool.query('DELETE FROM goals WHERE userid=$1;',[username])
     pool.query('DELETE FROM exercise WHERE workoutid=$1;',[workoutid])
-    pool.query('DELETE FROM workout WHERE userid=$1;',[id])
-    pool.query('DELETE FROM users WHERE id=$1;',[id])
+    pool.query('DELETE FROM workout WHERE userid=$1;',[username])
+    pool.query('DELETE FROM users WHERE id=$1;',[username])
     .then((result)=> res.send('deleted'))
     .catch((err)=> res.status(500))
 });
+
 //delete workout
-app.delete('/workout/:workoutid', (req,res)=>{
+app.delete('/deleteWorkout/:workoutid', (req,res)=>{
     const workoutid = req.params.workoutid;
     pool.query('DELETE FROM workout WHERE workoutid=$1;',[workoutid])
     .then((result)=> res.send('deleted'))
     .catch((err)=> res.status(500))
 });
+
 //delete exercise
-app.delete('/exercise/:workoutid', (req,res)=>{
+app.delete('/deleteExercise/:workoutid', (req,res)=>{
     const workoutid = req.params.workoutid;
     pool.query('DELETE FROM exercise WHERE workoutid=$1;',[workoutid])
     .then((result)=> res.send('deleted'))
     .catch((err)=> res.status(500))
 });
-//delete goals
-app.delete('/goals/:id/', (req,res)=>{
-    const id = req.params.id;
-    const workoutid = req.params.workoutid;
-    pool.query('DELETE FROM goals WHERE userid=$1;',[userid])
-    pool.query('DELETE FROM exercise WHERE workoutid=$1;',[workoutid])
-    pool.query('DELETE FROM workout WHERE userid=$1;',[userid])
-    pool.query('DELETE FROM users WHERE id=$1;',[userid])
+
+//delete goal
+app.delete('/deleteGoal/:username/', (req,res)=>{
+    const username = req.params.workoutid;
+    pool.query('DELETE FROM goals WHERE username=$1;',[username])
     .then((result)=> res.send('deleted'))
     .catch((err)=> res.status(500))
 });
