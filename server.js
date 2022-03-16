@@ -7,9 +7,9 @@ const { Pool } = require('pg');
 
 const pool = new Pool ({
     connectionString: process.env.DATABASE_URL,
-    ssl: {
+    ssl: process.env.node_env === 'production' ? {
         rejectUnauthorized: false
-    }
+    }: false
 });
 
 app.use(express.static('public'));
@@ -43,6 +43,7 @@ app.get('/:id/goals', (req,res) =>{
 
 app.post('/users', (req, res) => {
     const {name, username} = req.body;
+    console.log(req.headers)
     pool.query('INSERT INTO users(name, username) VALUES($1, $2) RETURNING *;',[name, username])
     .then((result)=> res.send(result.rows[0]))
     .catch((err)=> res.sendStatus(500))
@@ -72,10 +73,10 @@ app.post('/goals', (req, res) => {
 app.delete('/users/:id/:workoutid', (req,res)=>{
     const id = req.params.id;
     const workoutid = req.params.workoutid;
-    pool.query('DELETE FROM goals WHERE userid=$1;',[userid])
+    pool.query('DELETE FROM goals WHERE userid=$1;',[id])
     pool.query('DELETE FROM exercise WHERE workoutid=$1;',[workoutid])
-    pool.query('DELETE FROM workout WHERE userid=$1;',[userid])
-    pool.query('DELETE FROM users WHERE id=$1;',[userid])
+    pool.query('DELETE FROM workout WHERE userid=$1;',[id])
+    pool.query('DELETE FROM users WHERE id=$1;',[id])
     .then((result)=> res.send('deleted'))
     .catch((err)=> res.status(500))
 });
