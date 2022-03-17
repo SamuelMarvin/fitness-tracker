@@ -26,15 +26,18 @@ $('.login').on('click', ()=>{
   const username = document.querySelector(".username").value;
   const password = document.querySelector(".password").value;
   // console.log(username, password);
-  $.ajax({
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Content-Type": "application/json",
-    },
-    type: "get",
-    url: `/login/${username}`,
-    data: JSON.stringify({"password": `${password}`}),
-    success: (res)=>console.log(res),
-  })
+  if(username && password){
+    $.ajax({
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+      },
+      type: "get",
+      url: `/login/${username}`,
+      data: JSON.stringify({"password": `${password}`}),
+      success: (res)=>console.log(res),
+    })
+
+  }
 })
 
