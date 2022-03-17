@@ -33,8 +33,8 @@ $('.login').on('click', ()=>{
         "Content-Type": "application/json",
       },
       type: "get",
-      url: `/login/${username}`,
-      data: JSON.stringify({"password": `${password}`}),
+      url: `/login/${username}/${password}`,
+      // data: JSON.stringify({"password": `${password}`}),
       success: (res)=>console.log(res),
     })
 

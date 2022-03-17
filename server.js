@@ -15,9 +15,9 @@ app.use(express.static('public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get('/login', (req,res) =>{
+app.get('/login/:username/:password', (req,res) =>{
     const username = req.params.username;
-    const password = req.body.password;
+    const password = req.params.password;
     pool.query(`SELECT * FROM users WHERE username=$1`,[username])
     .then((result)=> {
         if(result.rows[0].password == password){
