@@ -19,10 +19,10 @@ app.get('/login/:username', (req,res) =>{
     const username = req.params.username;
     const password = req.body.password;
     pool.query(`SELECT * FROM users WHERE username=$1`,[username])
-    .then((result)=> {res.send(result)
-        // if(result.rows[0].password == password){
-        //     res.send('permission granted')
-        // } else {res.send('access denied')}
+    .then((result)=> {
+        if(result.rows[0].password == password){
+            res.send('permission granted')
+        } else {res.send('access denied')}
     }).catch((err)=> console.log(err))
 })
 
